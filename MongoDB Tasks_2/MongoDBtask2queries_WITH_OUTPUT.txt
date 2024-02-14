@@ -1,0 +1,173 @@
+MongoDB task - 2 with output added below
+
+//Database
+use zenclassProgramme
+
+// Collections Creation
+var collectionList = ["users", "codekata", "attendance", "topics", "tasks", "company_drives", "mentors"];
+	collectionList.forEach(function(collectionName) {db.createCollection(collectionName)});
+
+// Data insertion in all collections
+    db.users.insertMany([{"username" : "Hari"}, {"username" : "Kumar"}, {"username" : "Vicky"}, {"username" : "Aarav"}]);
+    {
+      acknowledged: true,
+      insertedIds: {
+        '0': ObjectId('5f449bb0e027a40c9aa9e7fb'),
+        '1': ObjectId('5f449bb0e027a40c9aa9e7fc'),
+        '2': ObjectId('5f449bb0e027a40c9aa9e7fd'),
+        '3': ObjectId('5f449bb0e027a40c9aa9e7fe')
+      }
+    }
+    db.codekata.insertMany([{"username" : "Hari", "noOfPblmsSolved" : 15, "totalPblms" : 50, "user_id" : ObjectId('5f449bb0e027a40c9aa9e7fb')},{"username" : "Kumar", "noOfPblmsSolved" : 20, "totalPblms" : 50, "user_id" : ObjectId('5f449bb0e027a40c9aa9e7fc')}]);
+    {
+      acknowledged: true,
+      insertedIds: {
+        '0': ObjectId('5f449c92e027a40c9aa9e7ff'),
+        '1': ObjectId('5f449caee027a40c9aa9e800')
+      }
+    }
+    db.attendance.insertMany([{"student_id" : ObjectId('5f449c92e027a40c9aa9e7ff'), "student_name" : "Hari", "date" : "2020-10-15", status: "present", "eligibleForPlacement" : "yes"},
+                              {"student_id" : ObjectId('5f449bb0e027a40c9aa9e7fc'), "student_name" : "Kumar", "date" : "2020-10-15", status: "absent", "eligibleForPlacement" : "yes"}]);
+      {
+        acknowledged: true,
+        insertedIds: {
+          '0': ObjectId('5f449f44e027a40c9aa9e801'),
+          '1': ObjectId('5f449f81e027a40c9aa9e802')
+        }
+      }
+    db.tasks.insertMany([{"student_id" : ObjectId('5f449bb0e027a40c9aa9e7fb'), "task_name" : "Java", "taught_date" : "2020-10-15", "submitted_date" : "2020-10-17"},
+                         {"student_id" : ObjectId('5f449bb0e027a40c9aa9e7fb'), "task_name" : "Java", "taught_date" : "2020-10-16", "submitted_date" : "2020-10-20"}]);
+    {
+      acknowledged: true,
+      insertedIds: {
+        '0': ObjectId('5f44a359e027a40c9aa9e803'),
+        '1': ObjectId('5f44a39be027a40c9aa9e804')
+
+      }
+    }
+    db.topics.insertMany([{"task_name" : "Java", "taught_date" : "2020-10-15"}, {"task_name" : "MongoDB", "taught_date" : "2020-10-16"}])
+    {
+      acknowledged: true,
+      insertedIds: {
+        '0': ObjectId('5f44aa04e027a40c9aa9e805'),
+        '1': ObjectId('5f44aa04e027a40c9aa9e806')
+      }
+    }
+    db.company_drives.insertMany([{"company_name" : "Accenture", "isHiring" : "Yes", "date" : "2020-10-01"}, {"company_name" : "Wipro", "isHiring" : "No", "date" : "2020-09-31"}, {"company_name" : "Cognizant", "isHiring" : "No", "date" : "2020-10-15"}]);
+    {
+      acknowledged: true,
+      insertedIds: {
+        '0': ObjectId('5f44aabee027a40c9aa9e807'),
+        '1': ObjectId('5f44aabee027a40c9aa9e808'),
+        '2': ObjectId('5f44aabee027a40c9aa9e809')
+      }
+    }
+    db.mentors.insertMany([{"mentor_name" : "Raghu" , "mentees" : "1"}, {"mentor_name" : "Mani", "mentees" : "5"}, {"mentor_name" : "Charles", "mentees" : 10}]);
+    {
+      acknowledged: true,
+      insertedIds: {
+        '0': ObjectId('5f44ab32e027a40c9aa9e80a'),
+        '1': ObjectId('5f44ab32e027a40c9aa9e80b'),
+        '2': ObjectId('5f44ab32e027a40c9aa9e80c')
+      }
+    }
+
+
+//Q1
+   db.topics.find({ "taught_date": { "$gte": "2020-10-01", "$lte": "2020-10-31" } })
+
+   Output:-
+    {
+      _id: ObjectId('5f44aa04e027a40c9aa9e805'),
+      task_name: 'Java',
+      taught_date: '2020-10-15'
+    }
+    {
+      _id: ObjectId('5f44aa04e027a40c9aa9e806'),
+      task_name: 'MongoDB',
+      taught_date: '2020-10-16'
+    }
+
+    db.tasks.find({ "taught_date": { "$gte": "2020-10-01", "$lte": "2020-10-31" } })
+
+   Output:-
+    {
+      _id: ObjectId('5f44a359e027a40c9aa9e803'),
+      student_id: ObjectId('5f449bb0e027a40c9aa9e7fb'),
+      task_name: 'Java',
+      taught_date: '2020-10-15',
+      submitted_date: '2020-10-17'
+    }
+    {
+      _id: ObjectId('5f44a359e027a40c9aa9e803'),
+      student_id: ObjectId('5f449bb0e027a40c9aa9e7fb'),
+      task_name: 'Java',
+      taught_date: '2020-10-15',
+      submitted_date: '2020-10-17'
+    }
+
+//Q2
+    db.company_drives.find({ "date": { "$gte": "2020-10-15", "$lte": "2020-10-31" } });
+    
+    Output:-
+    {
+      _id: ObjectId('5f44aabee027a40c9aa9e809'),
+      company_name: 'Cognizant',
+      isHiring: 'No',
+      date: '2020-10-15'
+    }
+
+//Q3
+   db.company_drives.aggregate([{$lookup: {from: "attendance",localField: "_id",foreignField: "student_id",as: "attendees"}}]);
+   
+   Output:-
+   {
+    _id: ObjectId('5f44aabee027a40c9aa9e807'),
+    company_name: 'Accenture',
+    isHiring: 'Yes',
+    date: '2020-10-01',
+    attendees: []
+   }
+   {
+    _id: ObjectId('5f44aabee027a40c9aa9e808'),
+    company_name: 'Wipro',
+    isHiring: 'No',
+    date: '2020-09-31',
+    attendees: []
+   }
+   {
+    _id: ObjectId('5f44aabee027a40c9aa9e809'),
+    company_name: 'Cognizant',
+    isHiring: 'No',
+    date: '2020-10-15',
+    attendees: []
+   }
+
+//Q4
+    db.codekata.find({},{username:true, noOfPblmsSolved:true});
+    
+    Output:-
+    {
+      _id: ObjectId('5f449c92e027a40c9aa9e7ff'),
+      username: 'Hari',
+      noOfPblmsSolved: 15
+    }
+    {
+      _id: ObjectId('5f449caee027a40c9aa9e800'),
+      username: 'Kumar',
+      noOfPblmsSolved: 20
+    }
+
+//Q5
+    db.mentors.find({"mentees" : {"$gt": "15"}});
+
+    Output:-
+    {
+      _id: ObjectId('5f44ab32e027a40c9aa9e80b'),
+      mentor_name: 'Mani',
+      mentees: '5'
+    }
+
+//Q6
+   db.attendance.find({ "date": { "$gte": "2020-10-15", "$lte": "2020-10-31" }, "status": "absent" }).count()
+   db.tasks.find({ "date": { "$gte": "2020-10-15", "$lte": "2020-10-31" }, "submitted_date": null }).count()
